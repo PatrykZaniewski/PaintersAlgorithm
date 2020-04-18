@@ -1,64 +1,28 @@
 package Logic;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static java.lang.Thread.sleep;
 
 public class Calculator {
 
-    private ArrayList<Rectangle3D> rectangle3DList;
-    private ArrayList<Rectangle2D> rectangle2DList;
+    private ArrayList<Polygon3D> polygon3DList;
+    private ArrayList<Polygon2D> polygon2DList;
 
     double distance = -200f;
 
-    public Calculator(ArrayList<Rectangle3D> rectangle3DList) {
-        this.rectangle3DList = rectangle3DList;
+    public Calculator(ArrayList<Polygon3D> polygon3DList) {
+        polygon3DList.sort(Collections.reverseOrder());
+        this.polygon3DList = polygon3DList;
     }
 
-    public ArrayList<Rectangle2D> projection() {
-        rectangle2DList = new ArrayList<>();
-        for (Rectangle3D rectangle3D : rectangle3DList) {
-            Rectangle2D rectangle2D = new Rectangle2D();
+    public ArrayList<Polygon2D> projection() {
+        polygon2DList = new ArrayList<>();
+        for (Polygon3D polygon3D : polygon3DList) {
+            Polygon2D polygon2D = new Polygon2D(polygon3D.getFill());
             ArrayList<Point2D> point2DList = new ArrayList<>();
-            /*for (int i = 0; i < rectangle3D.getPoint3DList().size(); i++) {
-
-                double x1, y1, z1;
-                double x2, y2, z2;
-                Point2D point2D1;
-                Point2D point2D2;
-                if(i == rectangle3D.getPoint3DList().size() - 1){
-                    x1 = rectangle3D.getPoint3DList().get(i).getX();
-                    y1 = rectangle3D.getPoint3DList().get(i).getY();
-                    z1 = rectangle3D.getPoint3DList().get(i).getZ();
-                    x2 = rectangle3D.getPoint3DList().get(0).getX();
-                    y2 = rectangle3D.getPoint3DList().get(0).getY();
-                    z2 = rectangle3D.getPoint3DList().get(0).getZ();
-                }
-                else
-                {
-                    x1 = rectangle3D.getPoint3DList().get(i).getX();
-                    y1 = rectangle3D.getPoint3DList().get(i).getY();
-                    z1 = rectangle3D.getPoint3DList().get(i).getZ();
-                    x2 = rectangle3D.getPoint3DList().get(i + 1).getX();
-                    y2 = rectangle3D.getPoint3DList().get(i + 1).getY();
-                    z2 = rectangle3D.getPoint3DList().get(i + 1).getZ();
-                }
-
-                if(1 == 1){
-                    double xp1 = ((x1 * distance) / (z1 > 1 ? z1 : 1)) + 325;
-                    double yp1 = ((y1 * distance) / (z1 > 1 ? z1 : 1)) + 325;
-
-                    double xp2 = ((x2 * distance) / (z2 > 1 ? z2 : 1)) + 325;
-                    double yp2 = ((y2 * distance) / (z2 > 1 ? z2 : 1)) + 325;
-
-                    point2D1 = new Point2D(xp1, yp1);
-                    point2D2 = new Point2D(xp2, yp2);
-
-                    point2DList.add(point2D1);
-                    point2DList.add(point2D2);
-                }
-            }*/
-            for (Point3D point3D : rectangle3D.getPoint3DList()) {
+            for (Point3D point3D : polygon3D.getPoint3DList()) {
                 double x = point3D.getX();
                 double y = point3D.getY();
                 double z = point3D.getZ();
@@ -69,26 +33,26 @@ public class Calculator {
                 Point2D point2D = new Point2D(xp, yp);
                 point2DList.add(point2D);
             }
-            rectangle2D.setPoint2DList(point2DList);
-            rectangle2DList.add(rectangle2D);
+            polygon2D.setPoint2DList(point2DList);
+            polygon2DList.add(polygon2D);
         }
-        return rectangle2DList;
+        return polygon2DList;
     }
 
-    public ArrayList<Rectangle3D> getRectangle3DList() {
-        return rectangle3DList;
+    public ArrayList<Polygon3D> getPolygon3DList() {
+        return polygon3DList;
     }
 
-    public void setRectangle3DList(ArrayList<Rectangle3D> rectangle3DList) {
-        this.rectangle3DList = rectangle3DList;
+    public void setPolygon3DList(ArrayList<Polygon3D> polygon3DList) {
+        this.polygon3DList = polygon3DList;
     }
 
-    public ArrayList<Rectangle2D> getRectangle2DList() {
-        return rectangle2DList;
+    public ArrayList<Polygon2D> getPolygon2DList() {
+        return polygon2DList;
     }
 
-    public void setRectangle2DList(ArrayList<Rectangle2D> rectangle2DList) {
-        this.rectangle2DList = rectangle2DList;
+    public void setPolygon2DList(ArrayList<Polygon2D> polygon2DList) {
+        this.polygon2DList = polygon2DList;
     }
 
     public void changeDistance(double change) {
@@ -102,8 +66,8 @@ public class Calculator {
     }
 
     public void changeTranslation(double change, String axis) {
-        for (Rectangle3D rectangle3D : this.rectangle3DList) {
-            for (Point3D point3D : rectangle3D.getPoint3DList()) {
+        for (Polygon3D polygon3D : this.polygon3DList) {
+            for (Point3D point3D : polygon3D.getPoint3DList()) {
                 switch (axis) {
                     case "x":
                         point3D.setX(point3D.getX() + change);
@@ -121,8 +85,8 @@ public class Calculator {
 
     public void changeRotation(double change, String axis) {
         change = Math.toRadians(change);
-        for (Rectangle3D rectangle3D : this.rectangle3DList) {
-            for (Point3D point3D : rectangle3D.getPoint3DList()) {
+        for (Polygon3D polygon3D : this.polygon3DList) {
+            for (Point3D point3D : polygon3D.getPoint3DList()) {
                 double x = point3D.getX();
                 double y = point3D.getY();
                 double z = point3D.getZ();

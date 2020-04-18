@@ -8,6 +8,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MainWindowController {
 
@@ -20,12 +21,12 @@ public class MainWindowController {
     @FXML
     public void initialize() {
         Reader reader = new Reader();
-        ArrayList<Rectangle3D> rectangle3DList = reader.readData();
-        calculator = new Calculator(rectangle3DList);
+        ArrayList<Polygon3D> polygon3DList = reader.readData();
+        calculator = new Calculator(polygon3DList);
         calculator.changeTranslation(105, "z");
         calculator.changeTranslation(-105, "y");
         calculator.projection();
-        draw(calculator.getRectangle2DList());
+        draw(calculator.getPolygon2DList());
 
         canvas.setOnMouseClicked(e -> {
             double x = e.getX() - 325.0;
@@ -37,18 +38,18 @@ public class MainWindowController {
         canvas.setOnKeyTyped(this::keyPressed);
     }
 
-    public void draw(ArrayList<Rectangle2D> rectangle2DList){
+    public void draw(ArrayList<Polygon2D> polygon2DList){
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, 650, 650);
-        gc.setStroke(Color.WHITE);
-        gc.beginPath();
-        for(Rectangle2D rectangle2D: rectangle2DList){
+        for(Polygon2D polygon2D : polygon2DList){
+            gc = canvas.getGraphicsContext2D();
+            gc.beginPath();
             int i = 0;
             double xstart = 0;
             double ystart = 0;
-            for(Point2D point2D: rectangle2D.getPoint2DList()){
+            for(Point2D point2D: polygon2D.getPoint2DList()){
                 if(i == 0){
                     xstart = point2D.getX();
                     ystart = point2D.getY();
@@ -61,12 +62,13 @@ public class MainWindowController {
                 i++;
             }
             gc.lineTo(xstart, ystart);
+            gc.setFill(polygon2D.getFill());
+            gc.fill();
             gc.stroke();
         }
     }
 
     public void keyPressed(KeyEvent keyEvent){
-        //TODO ten czas poprawic na mili moze
         if (System.nanoTime() - lastTimePressed > keyCooldown) {
             switch(keyEvent.getCharacter()){
                 case "w":
